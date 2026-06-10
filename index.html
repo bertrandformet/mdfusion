@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light" data-density="regular">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MDFusion — Convertir & fusionner en Markdown</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="src/theme.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#d97757">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="icons/icon-192.svg">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231c1b1a'/><text x='50' y='72' text-anchor='middle' font-family='monospace' font-size='55' font-weight='700' fill='%23f6f5f2'>M</text></svg>">
+</head>
+<body>
+  <div id="app"></div>
+  <script type="module">
+    import { App } from './src/app.js';
+    try {
+      document.getElementById('app').appendChild(App());
+    } catch(e) {
+      document.getElementById('app').textContent = 'Erreur: ' + e.message;
+      console.error(e);
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>

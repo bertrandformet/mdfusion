@@ -1,0 +1,142 @@
+/* proto/theme.css — tokens clair/sombre, densité, style de l'aperçu Markdown */
+
+:root {
+  --accent: #d97757;
+  --accent-ink: #ffffff;
+  --bg-canvas: #f6f5f2;
+  --bg-surface: #ffffff;
+  --bg-inset: #fbfaf8;
+  --bg-soft: #f1efeb;
+  --ink: #1c1b1a;
+  --sub: #76736d;
+  --faint: #a4a09a;
+  --line: #e9e7e2;
+  --line-strong: #ddd9d2;
+  --shadow: 0 1px 2px rgba(20,18,16,0.05);
+  --shadow-pop: 0 8px 28px rgba(20,18,16,0.14), 0 0 0 1px rgba(0,0,0,0.04);
+  --accent-bg: rgba(217,119,87,0.10);
+  --ok: #1f8a5b;
+
+  --radius: 10px;
+  --radius-sm: 7px;
+  --gap: 16px;
+  --pad: 16px;
+  --row-pad: 10px;
+
+  --sans: "Hanken Grotesk", system-ui, -apple-system, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+}
+
+[data-theme="dark"] {
+  --accent: #e08862;
+  --accent-ink: #1a1411;
+  --bg-canvas: #100f0e;
+  --bg-surface: #1a1816;
+  --bg-inset: #211e1b;
+  --bg-soft: #242120;
+  --ink: #f1ede7;
+  --sub: #9c968c;
+  --faint: #6a655d;
+  --line: #2b2825;
+  --line-strong: #36322e;
+  --shadow: 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-pop: 0 8px 28px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
+  --accent-bg: rgba(224,136,98,0.16);
+  --ok: #3ba776;
+}
+
+[data-density="compact"] { --radius: 8px; --radius-sm: 6px; --gap: 11px; --pad: 12px; --row-pad: 7px; }
+[data-density="comfy"]   { --radius: 13px; --radius-sm: 9px; --gap: 22px; --pad: 22px; --row-pad: 14px; }
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg-canvas);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  transition: background .25s, color .25s;
+}
+
+/* défilement discret */
+.scroll { overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
+.scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+.scroll::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 8px; }
+.scroll::-webkit-scrollbar-track { background: transparent; }
+
+/* ─── aperçu Markdown rendu ─────────────────────────────── */
+.md-body { color: var(--ink); font-size: 14px; line-height: 1.65; letter-spacing: -0.005em; }
+.md-body > *:first-child { margin-top: 0; }
+.md-body h1 { font-size: 23px; font-weight: 700; letter-spacing: -0.02em; margin: 26px 0 8px; }
+.md-body h2 { font-size: 17px; font-weight: 700; letter-spacing: -0.015em; margin: 22px 0 8px; }
+.md-body h3 { font-size: 14.5px; font-weight: 700; margin: 18px 0 6px; }
+.md-body p { margin: 0 0 13px; color: #54514c; }
+[data-theme="dark"] .md-body p { color: #c7c2b9; }
+.md-body strong { color: var(--ink); font-weight: 700; }
+.md-body a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent-bg); }
+.md-body ul, .md-body ol { margin: 0 0 13px; padding-left: 20px; color: #54514c; }
+[data-theme="dark"] .md-body ul, [data-theme="dark"] .md-body ol { color: #c7c2b9; }
+.md-body li { margin: 3px 0; }
+.md-body li::marker { color: var(--faint); }
+.md-body hr { border: 0; border-top: 1px solid var(--line); margin: 20px 0; }
+.md-body blockquote {
+  margin: 0 0 14px; padding: 4px 0 4px 16px; border-left: 2px solid var(--accent);
+  color: var(--sub); font-style: italic;
+}
+.md-body code {
+  font-family: var(--mono); font-size: 0.85em; background: var(--bg-soft);
+  padding: 2px 5px; border-radius: 5px; color: var(--accent);
+}
+.md-body pre {
+  background: var(--bg-inset); border: 1px solid var(--line); border-radius: var(--radius-sm);
+  padding: 14px 16px; overflow-x: auto; margin: 0 0 14px; position: relative;
+}
+.md-body pre code { background: none; padding: 0; color: var(--ink); font-size: 12.5px; line-height: 1.6; }
+.md-body pre[data-lang]:not([data-lang=""])::before {
+  content: attr(data-lang); position: absolute; top: 8px; right: 12px;
+  font-family: var(--mono); font-size: 10px; color: var(--faint); text-transform: uppercase; letter-spacing: .08em;
+}
+.md-body table { border-collapse: collapse; width: 100%; margin: 0 0 16px; font-size: 12.5px; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
+.md-body th { background: var(--bg-soft); text-align: left; font-weight: 600; }
+.md-body th, .md-body td { padding: 8px 13px; border-bottom: 1px solid var(--line); }
+.md-body td { color: #54514c; font-family: var(--mono); font-size: 11.5px; }
+[data-theme="dark"] .md-body td { color: #c7c2b9; }
+.md-body tr:last-child td { border-bottom: none; }
+
+/* source brute */
+.md-source {
+  font-family: var(--mono); font-size: 12px; line-height: 1.7; color: var(--sub);
+  white-space: pre-wrap; word-break: break-word;
+}
+
+/* transitions génériques */
+.tap { transition: background .14s, color .14s, border-color .14s, box-shadow .14s, transform .14s; }
+.tap:active { transform: translateY(0.5px); }
+button { font-family: inherit; cursor: pointer; }
+
+/* (animations regroupées plus bas sous prefers-reduced-motion) */
+
+/* apparition d'une ligne de fichier — translation seule (jamais invisible si figée) */
+@keyframes rowIn { from { transform: translateY(-6px); } to { transform: none; } }
+
+/* fondu de vue — translation seule */
+@keyframes viewIn { from { transform: translateY(8px); } to { transform: none; } }
+
+/* spinner */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin .7s linear infinite; }
+
+/* toasts */
+@keyframes toastIn { from { opacity: 0; transform: translateY(12px) scale(.96); } to { opacity: 1; transform: none; } }
+.toast {
+  display: flex; align-items: center; gap: 10px; padding: 11px 15px 11px 13px;
+  background: var(--bg-surface); border: 1px solid var(--line); border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-pop); font-size: 13px; font-weight: 500; color: var(--ink);
+}
+.toast .ic { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .row-in { animation: rowIn .22s cubic-bezier(.2,.7,.3,1); }
+  .view-in { animation: viewIn .26s cubic-bezier(.2,.7,.3,1); }
+  .toast { animation: toastIn .24s cubic-bezier(.2,.7,.3,1); }
+}
