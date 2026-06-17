@@ -32,6 +32,7 @@ Mode **WYSIWYG bidirectionnel** : écrivez en Markdown et l'aperçu se met à jo
 | --- | --- | --- |
 | PDF | `.pdf` | pdfjs-dist |
 | Word | `.docx` | mammoth + turndown |
+| PowerPoint | `.pptx` | JSZip (texte uniquement) |
 | Excel | `.xlsx`, `.xls` | SheetJS |
 | CSV | `.csv` | PapaParse |
 | HTML | `.html`, `.htm` | Turndown |
@@ -41,7 +42,8 @@ Mode **WYSIWYG bidirectionnel** : écrivez en Markdown et l'aperçu se met à jo
 | Images | `.png`, `.jpg`, `.gif`, `.webp`, `.svg` | natif |
 | Texte | `.txt`, `.md` | natif |
 
-> **PPTX** : non supporté directement. Convertissez en PDF au préalable.
+> **PPTX** : seul le contenu textuel est extrait. Les images, formes et mises en page ne sont pas conservées.
+> **PPT** (ancien format) : non supporté. Enregistrez en `.pptx` ou convertissez en PDF.
 
 ---
 
