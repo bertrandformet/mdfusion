@@ -1,0 +1,11 @@
+Format,Extension,Librairie,Taille,Chargement
+PDF,.pdf,pdfjs-dist,2.5 Mo,Lazy
+DOCX,.docx,mammoth + turndown,80 Ko,Lazy
+XLSX,.xlsx,SheetJS,400 Ko,Lazy
+CSV,.csv,PapaParse,9 Ko,Eager
+HTML,.html,Turndown,20 Ko,Eager
+EPUB,.epub,JSZip + Turndown,80 Ko,Lazy
+XML,.xml,fast-xml-parser,30 Ko,Eager
+JSON,.json,Natif,0,Natif
+Image,.png / .jpg,Natif,0,Natif
+Texte,.txt,Natif,0,Natif

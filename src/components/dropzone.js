@@ -1,8 +1,8 @@
-import { el } from '../utils/dom.js';
-import { icons } from '../utils/icons.js';
-import { Kbd } from './ui.js';
+import { el } from '../utils/dom.js?v=5';
+import { icons } from '../utils/icons.js?v=5';
+import { Kbd } from './ui.js?v=5';
 
-export function DropZone({ onAdd, onFiles, accept = 'PDF · DOCX · XLSX · CSV · HTML · EPUB · IMG · XML · JSON', hint, compact }) {
+export function DropZone({ onAdd, onFiles, accept = 'PDF · DOCX · PPTX · XLSX · CSV · HTML · EPUB · IMG · XML · JSON', hint, compact }) {
   let over = false;
 
   const iconWrap = el('span', {
@@ -39,6 +39,9 @@ export function DropZone({ onAdd, onFiles, accept = 'PDF · DOCX · XLSX · CSV 
 
   const fileInput = el('input', { type: 'file', style: { display: 'none' } });
   fileInput.multiple = true;
+  if (accept === 'MD · MARKDOWN') {
+    fileInput.accept = '.md,.markdown';
+  }
   fileInput.addEventListener('change', () => {
     if (fileInput.files.length > 0 && onFiles) {
       onFiles(Array.from(fileInput.files));

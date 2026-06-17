@@ -1,5 +1,5 @@
-// Moteur Markdown (rendu HTML) + helpers de fusion.
-// Converti depuis proto/engine.jsx — logique inchangée.
+// proto/engine.jsx — moteur Markdown (rendu HTML) + helpers de fusion.
+// Pas de dépendance : petit parseur suffisant pour l'aperçu.
 
 function escapeHtml(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -10,19 +10,19 @@ function inline(s) {
   t = t.replace(/`([^`]+)`/g, '<code>$1</code>');
   t = t.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   t = t.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-  t = t.replace(/~~([^~]+)~~/g, '<del>$1</del>');
-  t = t.replace(/&lt;u&gt;([^&]*)&lt;\/u&gt;/g, '<u>$1</u>');
   t = t.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
   return t;
 }
 
-export function mdToHtml(md) {
+// Markdown -> HTML. Gère titres, listes, tableaux, hr, citations, blocs de code.
+function mdToHtml(md) {
   const lines = (md || '').replace(/\r\n/g, '\n').split('\n');
   const out = [];
   let i = 0;
   while (i < lines.length) {
     const line = lines[i];
 
+    // bloc de code ```
     if (/^```/.test(line)) {
       const lang = line.replace(/^```/, '').trim();
       const buf = [];
@@ -32,15 +32,19 @@ export function mdToHtml(md) {
       out.push(`<pre data-lang="${lang}"><code>${buf.join('\n')}</code></pre>`);
       continue;
     }
+    // hr
     if (/^---+\s*$/.test(line) || /^\*\s*\*\s*\*/.test(line)) { out.push('<hr/>'); i++; continue; }
+    // titres
     const h = line.match(/^(#{1,6})\s+(.*)$/);
     if (h) { const n = h[1].length; out.push(`<h${n}>${inline(h[2])}</h${n}>`); i++; continue; }
+    // citation
     if (/^>\s?/.test(line)) {
       const buf = [];
       while (i < lines.length && /^>\s?/.test(lines[i])) { buf.push(inline(lines[i].replace(/^>\s?/, ''))); i++; }
       out.push(`<blockquote>${buf.join('<br/>')}</blockquote>`);
       continue;
     }
+    // tableau
     if (/\|/.test(line) && i + 1 < lines.length && /^[\s|:-]+$/.test(lines[i + 1]) && /-/.test(lines[i + 1])) {
       const head = line.split('|').filter((c) => c.trim() !== '').map((c) => c.trim());
       i += 2;
@@ -55,18 +59,7 @@ export function mdToHtml(md) {
       out.push(html);
       continue;
     }
-    if (/^\s*[-*]\s+\[[ x]\]\s/.test(line)) {
-      const buf = [];
-      while (i < lines.length && /^\s*[-*]\s+\[[ x]\]\s/.test(lines[i])) {
-        const checked = /\[x\]/.test(lines[i]);
-        const text = lines[i].replace(/^\s*[-*]\s+\[[ x]\]\s+/, '');
-        const cb = `<input type="checkbox" disabled ${checked ? 'checked' : ''}/> `;
-        buf.push(`<li style="list-style:none;margin-left:-20px">${cb}${inline(text)}</li>`);
-        i++;
-      }
-      out.push(`<ul>${buf.join('')}</ul>`);
-      continue;
-    }
+    // listes
     if (/^\s*[-*]\s+/.test(line)) {
       const buf = [];
       while (i < lines.length && /^\s*[-*]\s+/.test(lines[i])) { buf.push(`<li>${inline(lines[i].replace(/^\s*[-*]\s+/, ''))}</li>`); i++; }
@@ -79,7 +72,9 @@ export function mdToHtml(md) {
       out.push(`<ol>${buf.join('')}</ol>`);
       continue;
     }
+    // ligne vide
     if (line.trim() === '') { i++; continue; }
+    // paragraphe
     const buf = [];
     while (i < lines.length && lines[i].trim() !== '' && !/^(#{1,6}\s|>\s?|```|---+\s*$|\s*[-*]\s+|\s*\d+\.\s+)/.test(lines[i])) {
       buf.push(inline(lines[i])); i++;
@@ -89,7 +84,8 @@ export function mdToHtml(md) {
   return out.join('\n');
 }
 
-export function offsetHeadings(md, offset) {
+// Décale les niveaux de titres d'un offset (pour la fusion).
+function offsetHeadings(md, offset) {
   if (!offset) return md;
   return md.split('\n').map((l) => {
     const m = l.match(/^(#{1,6})(\s+.*)$/);
@@ -99,6 +95,9 @@ export function offsetHeadings(md, offset) {
   }).join('\n');
 }
 
-export function wordCount(md) {
+// Compte les mots d'un markdown (approx).
+function wordCount(md) {
   return (md || '').replace(/[#>*`|_-]/g, ' ').split(/\s+/).filter(Boolean).length;
 }
+
+Object.assign(window, { mdToHtml, offsetHeadings, wordCount });

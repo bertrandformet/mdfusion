@@ -18,7 +18,7 @@
 <body>
   <div id="app"></div>
   <script type="module">
-    import { App } from './src/app.js';
+    import { App } from './src/app.js?v=5';
     try {
       document.getElementById('app').appendChild(App());
     } catch(e) {
@@ -27,7 +27,7 @@
     }
 
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(() => {});
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
     }
   </script>
 </body>

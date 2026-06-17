@@ -1,8 +1,8 @@
-import { el } from './utils/dom.js';
-import { icons } from './utils/icons.js';
-import { ConvertView } from './views/convert.js';
-import { MergeView } from './views/merge.js';
-import { EditorView } from './views/editor.js';
+import { el } from './utils/dom.js?v=5';
+import { icons } from './utils/icons.js?v=5';
+import { ConvertView } from './views/convert.js?v=5';
+import { MergeView } from './views/merge.js?v=5';
+import { EditorView } from './views/editor.js?v=5';
 
 const FONT_STACKS = {
   hanken: '"Hanken Grotesk", system-ui, sans-serif',
@@ -131,9 +131,19 @@ export function App() {
     wrapper.appendChild(viewCache[view]);
   }
 
+  const footer = el('footer', {
+    style: {
+      flex: '0 0 auto', padding: '8px 20px', borderTop: '1px solid var(--line)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+      fontSize: '11px', color: 'var(--faint)', fontFamily: 'var(--mono)',
+      background: 'var(--bg-surface)',
+    },
+  });
+  footer.innerHTML = 'MDFusion · Bertrand Formet · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener" style="color:var(--sub);text-decoration:none">CC BY 4.0</a> · <a href="https://github.com/bertrandformet/mdfusion" target="_blank" rel="noopener" style="color:var(--sub);text-decoration:none">GitHub</a>';
+
   const shell = el('div', {
     style: { height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' },
-  }, header, main);
+  }, header, main, footer);
 
   applyTheme();
   renderNav();

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+  <nom>MDFusion</nom>
+  <version>2.0</version>
+  <type>PWA</type>
+  <formats>
+    <format categorie="document">
+      <nom>PDF</nom>
+      <extension>.pdf</extension>
+      <librairie>pdfjs-dist</librairie>
+    </format>
+    <format categorie="document">
+      <nom>DOCX</nom>
+      <extension>.docx</extension>
+      <librairie>mammoth</librairie>
+    </format>
+    <format categorie="tableur">
+      <nom>XLSX</nom>
+      <extension>.xlsx</extension>
+      <librairie>SheetJS</librairie>
+    </format>
+    <format categorie="web">
+      <nom>HTML</nom>
+      <extension>.html</extension>
+      <librairie>Turndown</librairie>
+    </format>
+  </formats>
+  <fonctionnalites>
+    <item>Conversion multi-formats</item>
+    <item>Fusion Markdown</item>
+    <item>Editeur WYSIWYG</item>
+  </fonctionnalites>
+</application>

@@ -2,7 +2,7 @@
   "name": "MDFusion",
   "short_name": "MDFusion",
   "description": "Convertir & fusionner des documents en Markdown, 100% hors-ligne",
-  "start_url": "/",
+  "start_url": "/mdfusion/",
   "display": "standalone",
   "background_color": "#f6f5f2",
   "theme_color": "#d97757",

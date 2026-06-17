@@ -1,5 +1,5 @@
-import { el } from '../utils/dom.js';
-import { icons } from '../utils/icons.js';
+import { el } from '../utils/dom.js?v=5';
+import { icons } from '../utils/icons.js?v=5';
 
 let container = null;
 

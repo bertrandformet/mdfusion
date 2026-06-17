@@ -1,6 +1,6 @@
-// Données d'exemple — converti depuis proto/data.jsx
+// proto/data.jsx — fichiers d'exemple + leur conversion Markdown.
 
-export const FORMATS = {
+const FORMATS = {
   pdf: { label: 'PDF', lazy: true },
   docx: { label: 'DOCX', lazy: true },
   xlsx: { label: 'XLSX', lazy: true },
@@ -13,7 +13,8 @@ export const FORMATS = {
   pptx: { label: 'PPTX', lazy: false, unsupported: true },
 };
 
-export const SAMPLE_DOCS = [
+// Banque de documents pour la vue Convertir (cliquer la dropzone en ajoute).
+const SAMPLE_DOCS = [
   {
     id: 'd1', name: 'rapport-trimestriel.pdf', ext: 'pdf', size: '2,4 Mo',
     md: `# Rapport trimestriel\n\nSynthèse des résultats du troisième trimestre, consolidée à partir des sources fournies.\n\n## Indicateurs clés\n\n| Trimestre | Revenu | Marge |\n| --- | --- | --- |\n| T1 | 1,2 M€ | 18 % |\n| T2 | 1,5 M€ | 21 % |\n| T3 | 1,9 M€ | 24 % |\n\n> La croissance reste portée par l'acquisition organique.`,
@@ -36,7 +37,7 @@ export const SAMPLE_DOCS = [
   },
   {
     id: 'd6', name: 'schema-api.json', ext: 'json', size: '12 Ko',
-    md: "# Schéma API\n\n```json\n{\n  \"endpoint\": \"/convert\",\n  \"method\": \"POST\",\n  \"accepts\": [\"pdf\", \"docx\", \"xlsx\"],\n  \"returns\": \"text/markdown\"\n}\n```",
+    md: `# Schéma API\n\n\`\`\`json\n{\n  "endpoint": "/convert",\n  "method": "POST",\n  "accepts": ["pdf", "docx", "xlsx"],\n  "returns": "text/markdown"\n}\n\`\`\``,
   },
   {
     id: 'd7', name: 'notes-reunion.epub', ext: 'epub', size: '320 Ko',
@@ -48,7 +49,8 @@ export const SAMPLE_DOCS = [
   },
 ];
 
-export const SAMPLE_MD = [
+// Fichiers Markdown pour la vue Fusionner.
+const SAMPLE_MD = [
   {
     id: 'm1', name: 'chapitre-01-introduction.md', ext: 'md', size: '4 Ko',
     md: `# Introduction\n\nCe guide décrit l'architecture hors-ligne de l'application.\n\n## Contexte\n\nLes utilisateurs travaillent souvent sans connexion fiable.`,
@@ -67,50 +69,22 @@ export const SAMPLE_MD = [
   },
 ];
 
-export const EDITOR_SAMPLE = `# Bienvenue dans l'éditeur
+const EDITOR_SAMPLE = `# Bienvenue dans l'éditeur
 
 Écrivez du **Markdown** à gauche, l'aperçu se met à jour à droite.
 
-## Mise en forme du texte
+## Ce que vous pouvez faire
 
-- Mettre en **gras** ou en *italique*
-- Ajouter du texte <u>souligné</u> ou ~~barré~~
+- Mettre en *italique* ou en **gras**
 - Insérer du \`code\` en ligne
-
-### Listes à puces
-
-- Premier élément
-- Deuxième élément
-- Troisième élément
-
-#### Listes numérotées
-
-1. Première étape
-2. Deuxième étape
-3. Troisième étape
-
-##### Cases à cocher
-
-- [ ] Tâche à faire
-- [x] Tâche terminée
-- [ ] Autre tâche en attente
-
-## Tableaux
+- Créer des listes et des tableaux
 
 | Raccourci | Action |
 | --- | --- |
 | Ctrl B | Gras |
 | Ctrl I | Italique |
 
-## Liens et citations
-
-Visitez [MDFusion](https://bertrandformet.github.io/mdfusion/) pour en savoir plus.
-
 > Tout fonctionne hors-ligne, sans serveur.
-
----
-
-## Bloc de code
 
 \`\`\`js
 export function convertir(fichier) {
@@ -118,3 +92,5 @@ export function convertir(fichier) {
 }
 \`\`\`
 `;
+
+Object.assign(window, { FORMATS, SAMPLE_DOCS, SAMPLE_MD, EDITOR_SAMPLE });

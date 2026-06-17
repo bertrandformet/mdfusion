@@ -1,0 +1,11 @@
+Bienvenue dans MDFusion
+
+Ceci est un fichier texte brut de test.
+Il sera converti en Markdown tel quel.
+
+MDFusion permet de :
+- Convertir des documents en Markdown
+- Fusionner plusieurs fichiers Markdown
+- Créer du Markdown depuis un éditeur
+
+Tout fonctionne 100% hors-ligne dans le navigateur.

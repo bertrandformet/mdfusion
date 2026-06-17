@@ -1,7 +1,7 @@
 // Primitives UI — converti depuis proto/ui.jsx en vanilla JS
-import { el } from '../utils/dom.js';
-import { icons } from '../utils/icons.js';
-import { FORMATS } from '../utils/data.js';
+import { el } from '../utils/dom.js?v=5';
+import { icons } from '../utils/icons.js?v=5';
+import { FORMATS } from '../utils/data.js?v=5';
 
 // ── Btn ──────────────────────────────────────────────────
 export function Btn({ children, icon, onClick, kind = 'primary', full, disabled, size = 'md' }) {

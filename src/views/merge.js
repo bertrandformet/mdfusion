@@ -1,16 +1,15 @@
-import { el } from '../utils/dom.js';
-import { icons } from '../utils/icons.js';
-import { SAMPLE_MD } from '../utils/data.js';
-import { offsetHeadings } from '../utils/engine.js';
-import { formatSize, copyToClipboard, downloadMd } from '../utils/download.js';
-import { Btn, Segmented, Card } from '../components/ui.js';
-import { DropZone } from '../components/dropzone.js';
-import { FileList } from '../components/filelist.js';
-import { PreviewPane } from '../components/preview.js';
-import { toast } from '../components/toast.js';
+import { el } from '../utils/dom.js?v=5';
+import { icons } from '../utils/icons.js?v=5';
+import { offsetHeadings } from '../utils/engine.js?v=5';
+import { formatSize, copyToClipboard, downloadMd } from '../utils/download.js?v=5';
+import { Btn, Segmented, Card } from '../components/ui.js?v=5';
+import { DropZone } from '../components/dropzone.js?v=5';
+import { FileList } from '../components/filelist.js?v=5';
+import { PreviewPane } from '../components/preview.js?v=5';
+import { toast } from '../components/toast.js?v=5';
 
 function buildMerge(files, sep, offset) {
-  const blocks = files.map((f) => {
+  const blocks = files.filter((f) => f.md).map((f) => {
     const body = offset ? offsetHeadings(f.md, offset) : f.md;
     if (sep === 'name') return `# ${f.name.replace(/\.[^.]+$/, '')}\n\n${body}`;
     return body;
@@ -51,16 +50,22 @@ function Stepper({ value, onChange, min = -2, max = 3 }) {
 }
 
 export function MergeView() {
-  let files = SAMPLE_MD.map((d) => ({ ...d }));
+  let files = [];
   let sep = 'rule';
   let offset = 0;
+  let idCounter = 0;
 
   const container = el('div', {
     className: 'view-in',
     style: { display: 'grid', gridTemplateColumns: '1.05fr 1fr', gap: 'var(--gap)', height: '100%', minHeight: '0' },
   });
 
-  const preview = PreviewPane({ md: '', filename: 'fusion.md' });
+  let editedMd = null;
+
+  const preview = PreviewPane({
+    md: '', filename: 'fusion.md', empty: 'Déposez des fichiers .md à fusionner',
+    onEdit: (md) => { editedMd = md; },
+  });
 
   const fileList = FileList({
     files,
@@ -69,15 +74,26 @@ export function MergeView() {
     onRemove: (id) => { files = files.filter((x) => x.id !== id); refresh(); },
   });
 
-  function getMd() { return buildMerge(files, sep, offset); }
+  function getMd() { return editedMd !== null ? editedMd : buildMerge(files, sep, offset); }
 
-  function addFile() {
-    const used = new Set(files.map((f) => f.id));
-    const next = SAMPLE_MD.find((d) => !used.has(d.id)) || SAMPLE_MD[files.length % SAMPLE_MD.length];
-    if (!next) return;
-    const id = used.has(next.id) ? next.id + '-' + Date.now() : next.id;
-    files = [...files, { ...next, id }];
-    toast('Markdown ajouté · ' + next.name, 'add');
+  async function handleFiles(realFiles) {
+    for (const f of realFiles) {
+      const ext = f.name.split('.').pop().toLowerCase();
+      if (ext !== 'md' && ext !== 'markdown') {
+        toast(f.name + ' : seuls les .md sont acceptés', 'warn');
+        continue;
+      }
+      idCounter++;
+      const text = await f.text();
+      files.push({
+        id: 'm-' + idCounter,
+        name: f.name,
+        ext: 'md',
+        size: (f.size / 1024).toFixed(1).replace('.', ',') + ' Ko',
+        md: text,
+      });
+    }
+    toast(files.length + ' fichier' + (files.length > 1 ? 's' : '') + ' markdown', 'add');
     refresh();
   }
 
@@ -88,12 +104,11 @@ export function MergeView() {
   function refresh() {
     fileList._setFiles(files);
     const md = getMd();
-    preview.update(md, files.length ? null : 'Ajoutez des fichiers .md à fusionner');
+    preview.update(md, files.length ? null : 'Déposez des fichiers .md à fusionner');
     const outKo = (new Blob([md]).size / 1024).toFixed(1).replace('.', ',');
     counterEl.innerHTML = `${files.length} fichiers<br/>→ ${outKo} Ko`;
   }
 
-  // Intro card
   const introIcon = el('span', {
     style: {
       width: '34px', height: '34px', borderRadius: '9px', background: 'var(--accent-bg)',
@@ -112,7 +127,6 @@ export function MergeView() {
     children: [introIcon, introText, counterEl],
   });
 
-  // Options
   const sepSeg = Segmented({
     size: 'sm', value: sep,
     options: [{ value: 'rule', label: '---', mono: true }, { value: 'name', label: '# Nom' }, { value: 'none', label: 'Aucun' }],
@@ -127,11 +141,10 @@ export function MergeView() {
   const optionsRow = el('div', {
     style: { display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap', flex: '0 0 auto' },
   },
-    el('span', { style: { display: 'flex', alignItems: 'center', gap: '11px' } }, optLabel('SÉPARATEUR'), sepSeg),
+    el('span', { style: { display: 'flex', alignItems: 'center', gap: '11px' } }, optLabel('SEPARATEUR'), sepSeg),
     el('span', { style: { display: 'flex', alignItems: 'center', gap: '11px' } }, optLabel('NIVEAUX DE TITRE'), stepper),
   );
 
-  // Actions
   const mergeBtn = Btn({ children: 'Fusionner & exporter', icon: 'merge', full: true, onClick: () => { downloadMd(getMd(), 'fusion.md'); toast('Fusion exportée · fusion.md', 'ok'); } });
   const copyBtn = Btn({ children: 'Copier', icon: 'copy', kind: 'ghost', onClick: () => { copyToClipboard(getMd()); toast('Markdown copié', 'copy'); } });
   const actionsRow = el('div', { style: { display: 'flex', gap: '10px', flex: '0 0 auto' } }, mergeBtn, copyBtn);
@@ -141,7 +154,8 @@ export function MergeView() {
   });
   leftCol.appendChild(introCard);
   leftCol.appendChild(DropZone({
-    onAdd: addFile, compact: true,
+    onFiles: handleFiles, compact: true,
+    accept: 'MD · MARKDOWN',
     hint: 'fichiers <b style="font-weight:600;color:var(--ink)">.md</b> uniquement',
   }));
   leftCol.appendChild(fileList);

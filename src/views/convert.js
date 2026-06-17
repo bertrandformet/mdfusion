@@ -1,18 +1,19 @@
-import { el } from '../utils/dom.js';
-import { icons } from '../utils/icons.js';
-import { FORMATS, SAMPLE_DOCS } from '../utils/data.js';
-import { offsetHeadings } from '../utils/engine.js';
-import { formatSize, copyToClipboard, downloadMd } from '../utils/download.js';
-import { Btn, Segmented, Toggle, Card } from '../components/ui.js';
-import { DropZone } from '../components/dropzone.js';
-import { FileList } from '../components/filelist.js';
-import { PreviewPane } from '../components/preview.js';
-import { toast } from '../components/toast.js';
+import { el } from '../utils/dom.js?v=5';
+import { icons } from '../utils/icons.js?v=5';
+import { FORMATS } from '../utils/data.js?v=5';
+import { offsetHeadings } from '../utils/engine.js?v=5';
+import { formatSize, copyToClipboard, downloadMd } from '../utils/download.js?v=5';
+import { Btn, Segmented, Toggle, Card } from '../components/ui.js?v=5';
+import { DropZone } from '../components/dropzone.js?v=5';
+import { FileList } from '../components/filelist.js?v=5';
+import { PreviewPane } from '../components/preview.js?v=5';
+import { toast } from '../components/toast.js?v=5';
+import { convert, getExt, formatSize as fmtBytes } from '../converters/index.js?v=5';
 
 function stripExt(n) { return n.replace(/\.[^.]+$/, ''); }
 
 function buildMarkdown(files, sep, nest) {
-  const blocks = files.filter((f) => f.st !== 'err').map((f) => {
+  const blocks = files.filter((f) => f.st === 'ok' && f.md).map((f) => {
     const body = nest ? offsetHeadings(f.md, 1) : f.md;
     if (sep === 'name') return `# ${stripExt(f.name)}\n\n${body}`;
     return body;
@@ -73,17 +74,23 @@ function PipelineStrip(state) {
 }
 
 export function ConvertView() {
-  let files = SAMPLE_DOCS.slice(0, 6).map((d) => ({ ...d, st: 'ok' }));
+  let files = [];
   let sep = 'rule';
   let nest = false;
   let busy = false;
+  let idCounter = 0;
 
   const container = el('div', {
     className: 'view-in',
     style: { display: 'grid', gridTemplateRows: 'auto 1fr', gap: 'var(--gap)', height: '100%', minHeight: '0' },
   });
 
-  const preview = PreviewPane({ md: '', filename: 'resultat.md' });
+  let editedMd = null;
+
+  const preview = PreviewPane({
+    md: '', filename: 'resultat.md', empty: 'Déposez des documents pour commencer',
+    onEdit: (md) => { editedMd = md; },
+  });
 
   const fileList = FileList({
     files,
@@ -92,47 +99,66 @@ export function ConvertView() {
     onRemove: (id) => { files = files.filter((x) => x.id !== id); refresh(); },
   });
 
-  function getMd() { return buildMarkdown(files, sep, nest); }
+  function getMd() { return editedMd !== null ? editedMd : buildMarkdown(files, sep, nest); }
 
-  function addFile() {
-    const used = new Set(files.map((f) => f.id));
-    const next = SAMPLE_DOCS.find((d) => !used.has(d.id)) || SAMPLE_DOCS[files.length % SAMPLE_DOCS.length];
-    if (!next) return;
-    const id = used.has(next.id) ? next.id + '-' + Date.now() : next.id;
-    files = [...files, { ...next, id, st: 'wait' }];
-    toast('Fichier ajouté · ' + next.name, 'add');
+  function handleFiles(realFiles) {
+    for (const f of realFiles) {
+      const ext = getExt(f);
+      idCounter++;
+      files.push({
+        id: 'f-' + idCounter,
+        name: f.name,
+        ext,
+        size: fmtBytes(f.size),
+        st: 'wait',
+        md: '',
+        file: f,
+      });
+    }
+    toast(realFiles.length + ' fichier' + (realFiles.length > 1 ? 's' : '') + ' ajouté' + (realFiles.length > 1 ? 's' : ''), 'add');
     refresh();
   }
 
-  function convert() {
+  async function convert1(entry) {
+    try {
+      entry.st = 'run';
+      fileList._setFiles(files);
+      const result = await convert(entry.file);
+      entry.md = result.md;
+      entry.st = 'ok';
+    } catch (e) {
+      entry.md = '';
+      entry.st = 'err';
+      toast(entry.name + ' : ' + e.message, 'warn');
+    }
+  }
+
+  async function convertAll() {
     if (!files.length) { toast('Ajoutez au moins un fichier', 'warn'); return; }
     busy = true;
-    files = files.map((f) => ({ ...f, st: 'run' }));
-    refresh();
-    let n = 0;
-    const tick = () => {
-      n++;
-      files = files.map((f, i) => ({ ...f, st: i < n ? 'ok' : f.st }));
+    const pending = files.filter((f) => f.st === 'wait' || f.st === 'err');
+    if (!pending.length) {
+      toast('Tous les fichiers sont déjà convertis', 'ok');
+      busy = false;
+      return;
+    }
+    for (const entry of pending) {
+      await convert1(entry);
       fileList._setFiles(files);
-      if (n < files.length) {
-        setTimeout(tick, 160);
-      } else {
-        busy = false;
-        toast('Conversion terminée · ' + files.length + ' fichiers fusionnés', 'ok');
-        refresh();
-      }
-    };
-    setTimeout(tick, 220);
+    }
+    busy = false;
+    editedMd = null;
+    toast('Conversion terminée · ' + files.length + ' fichiers fusionnés', 'ok');
+    refresh();
   }
 
   function refresh() {
     fileList._setFiles(files);
     const md = getMd();
-    preview.update(md, files.length ? null : 'Ajoutez des documents pour voir l’aperçu');
+    preview.update(md, files.length ? null : 'Déposez des documents pour commencer');
     renderPipeline();
   }
 
-  // Options
   const sepSeg = Segmented({
     size: 'sm', value: sep,
     options: [{ value: 'rule', label: '---', mono: true }, { value: 'name', label: '# Nom' }, { value: 'none', label: 'Aucun' }],
@@ -147,7 +173,7 @@ export function ConvertView() {
     style: { display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap', flex: '0 0 auto' },
   }, OptionRow('SÉPARATEUR', sepSeg), OptionRow('TITRES', nestWrap));
 
-  const convertBtn = Btn({ children: 'Convertir & fusionner', icon: 'bolt', full: true, onClick: convert });
+  const convertBtn = Btn({ children: 'Convertir & fusionner', icon: 'bolt', full: true, onClick: convertAll });
   const copyBtn = Btn({ children: 'Copier', icon: 'copy', kind: 'ghost', onClick: () => { copyToClipboard(getMd()); toast('Markdown copié dans le presse-papier', 'copy'); } });
   const dlBtn = Btn({ children: '.md', icon: 'download', kind: 'ghost', onClick: () => { downloadMd(getMd(), 'resultat.md'); toast('Téléchargement de resultat.md', 'dl'); } });
   const actionsRow = el('div', { style: { display: 'flex', gap: '10px', flex: '0 0 auto' } }, convertBtn, copyBtn, dlBtn);
@@ -155,7 +181,7 @@ export function ConvertView() {
   const leftCol = el('div', {
     style: { display: 'flex', flexDirection: 'column', gap: 'var(--gap)', minHeight: '0' },
   });
-  leftCol.appendChild(DropZone({ onAdd: addFile }));
+  leftCol.appendChild(DropZone({ onFiles: handleFiles }));
   leftCol.appendChild(fileList);
   leftCol.appendChild(optionsRow);
   leftCol.appendChild(actionsRow);
