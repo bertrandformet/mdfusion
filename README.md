@@ -95,6 +95,7 @@ Le dossier `tests/` contient des fichiers d'exemple pour chaque format :
 - `exemple.csv` — tableau CSV
 - `exemple.html` — page HTML
 - `exemple.xml` — document XML
+- `exemple.pptx` — présentation PowerPoint (texte uniquement)
 - `chapitre-01.md` — Markdown (introduction)
 - `chapitre-02.md` — Markdown (formats)
 - `chapitre-03.md` — Markdown (guide)
