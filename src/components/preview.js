@@ -1,7 +1,7 @@
-import { el } from '../utils/dom.js?v=5';
-import { icons } from '../utils/icons.js?v=5';
-import { mdToHtml } from '../utils/engine.js?v=5';
-import { Segmented, Card } from './ui.js?v=5';
+import { el } from '../utils/dom.js?v=6';
+import { icons } from '../utils/icons.js?v=6';
+import { mdToHtml } from '../utils/engine.js?v=6';
+import { Segmented, Card } from './ui.js?v=6';
 
 export function PreviewPane({ md = '', filename = 'resultat.md', empty, onEdit }) {
   let mode = 'rendu';

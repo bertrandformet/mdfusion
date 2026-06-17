@@ -1,6 +1,6 @@
-import { el } from '../utils/dom.js?v=5';
-import { icons } from '../utils/icons.js?v=5';
-import { FmtBadge, StatusPill, Card } from './ui.js?v=5';
+import { el } from '../utils/dom.js?v=6';
+import { icons } from '../utils/icons.js?v=6';
+import { FmtBadge, StatusPill, Card } from './ui.js?v=6';
 
 export function FileList({ files, onReorder, onRemove, title }) {
   let dragId = null;

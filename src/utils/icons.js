@@ -17,6 +17,7 @@ export const icons = {
   check: mk('<path d="M5 12.5l4.5 4.5L19 6.5"/>', { sw: 2 }),
   x: mk('<path d="M6 6l12 12M18 6L6 18"/>'),
   plus: mk('<path d="M12 5v14M5 12h14"/>'),
+  reset: mk('<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>'),
   grip: mk('<circle cx="9" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="15" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="9" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="9" cy="18" r="1.3" fill="currentColor" stroke="none"/><circle cx="15" cy="18" r="1.3" fill="currentColor" stroke="none"/>'),
   arrow: mk('<path d="M4 12h15"/><path d="M13 6l6 6-6 6"/>'),
   moon: mk('<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>'),

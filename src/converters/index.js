@@ -1,6 +1,6 @@
-import { convertText } from './text.js?v=5';
-import { convertJson } from './json.js?v=5';
-import { convertImage } from './image.js?v=5';
+import { convertText } from './text.js?v=6';
+import { convertJson } from './json.js?v=6';
+import { convertImage } from './image.js?v=6';
 
 function getExt(file) {
   const name = file.name || '';

@@ -1,6 +1,6 @@
-import { el } from '../utils/dom.js?v=5';
-import { icons } from '../utils/icons.js?v=5';
-import { Kbd } from './ui.js?v=5';
+import { el } from '../utils/dom.js?v=6';
+import { icons } from '../utils/icons.js?v=6';
+import { Kbd } from './ui.js?v=6';
 
 export function DropZone({ onAdd, onFiles, accept = 'PDF · DOCX · PPTX · XLSX · CSV · HTML · EPUB · IMG · XML · JSON', hint, compact }) {
   let over = false;

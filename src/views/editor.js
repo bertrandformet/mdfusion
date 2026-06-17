@@ -1,10 +1,10 @@
-import { el } from '../utils/dom.js?v=5';
-import { icons } from '../utils/icons.js?v=5';
-import { EDITOR_SAMPLE } from '../utils/data.js?v=5';
-import { mdToHtml, wordCount } from '../utils/engine.js?v=5';
-import { copyToClipboard, downloadMd } from '../utils/download.js?v=5';
-import { Btn, Segmented, Card } from '../components/ui.js?v=5';
-import { toast } from '../components/toast.js?v=5';
+import { el } from '../utils/dom.js?v=6';
+import { icons } from '../utils/icons.js?v=6';
+import { EDITOR_SAMPLE } from '../utils/data.js?v=6';
+import { mdToHtml, wordCount } from '../utils/engine.js?v=6';
+import { copyToClipboard, downloadMd } from '../utils/download.js?v=6';
+import { Btn, Segmented, Card } from '../components/ui.js?v=6';
+import { toast } from '../components/toast.js?v=6';
 
 let TurndownService;
 async function loadTurndown() {

@@ -1,8 +1,8 @@
-import { el } from './utils/dom.js?v=5';
-import { icons } from './utils/icons.js?v=5';
-import { ConvertView } from './views/convert.js?v=5';
-import { MergeView } from './views/merge.js?v=5';
-import { EditorView } from './views/editor.js?v=5';
+import { el } from './utils/dom.js?v=6';
+import { icons } from './utils/icons.js?v=6';
+import { ConvertView } from './views/convert.js?v=6';
+import { MergeView } from './views/merge.js?v=6';
+import { EditorView } from './views/editor.js?v=6';
 
 const FONT_STACKS = {
   hanken: '"Hanken Grotesk", system-ui, sans-serif',
@@ -144,6 +144,13 @@ export function App() {
   const shell = el('div', {
     style: { height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' },
   }, header, main, footer);
+
+  window.addEventListener('beforeunload', (e) => {
+    if (window._mdfusionDirty) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
 
   applyTheme();
   renderNav();
